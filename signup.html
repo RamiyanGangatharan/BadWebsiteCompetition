@@ -34,6 +34,29 @@
             <button class="signup-confirm" type="submit">Confirm</button>
         </form>
     </main>
+    <script>
+        const signupForm = document.querySelector('.signup-card');
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const email = document.getElementById('email').value.trim();
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            const userData = { username, password, email };
+            localStorage.setItem('signupUser', JSON.stringify(userData));
+
+            alert('User created successfully. Redirecting to login page.');
+            window.location.href = 'login.html';
+        });
+    </script>
     <script src="assets/morse-everywhere.js"></script>
 </body>
 </html>

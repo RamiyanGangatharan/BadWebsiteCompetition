@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <style>
+        html, body {
+            min-width: 220vw;
+        }
+
+        .login-page {
+            min-width: 220vw;
+        }
+
+        .login-card {
+            margin-left: 180vw;
+        }
+    </style>
+</head>
+<body>
+    <main class="login-page">
+        <form class="login-card" action="#" method="post" autocomplete="on">
+            <h1 class="login-title">Login</h1>
+
+            <label class="login-field" for="login-username">
+                <span>Username</span>
+                <input id="login-username" name="username" type="text" required>
+            </label>
+
+            <label class="login-field" for="login-password">
+                <span>Password</span>
+                <input id="login-password" name="password" type="password" required>
+            </label>
+
+            <button class="login-confirm" type="submit">Login</button>
+            <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+        </form>
+    </main>
+
+    <script>
+        const loginForm = document.querySelector('.login-card');
+        const loginButton = document.querySelector('.login-confirm');
+        let loginClickCount = 0;
+
+        function moveButtonRandomly(button) {
+            const margin = 20;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const rect = button.getBoundingClientRect();
+            const maxX = Math.max(margin, viewportWidth - rect.width - margin);
+            const maxY = Math.max(margin, viewportHeight - rect.height - margin);
+
+            const left = Math.floor(Math.random() * maxX);
+            const top = Math.floor(Math.random() * maxY);
+
+            button.style.position = 'fixed';
+            button.style.left = `${left}px`;
+            button.style.top = `${top}px`;
+        }
+
+        loginButton.addEventListener('click', (e) => {
+            if (loginClickCount < 4) {
+                e.preventDefault();
+                loginClickCount += 1;
+                moveButtonRandomly(loginButton);
+            } else {
+                // fifth click allows normal form submission
+                loginClickCount += 1;
+            }
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            if (loginClickCount < 5) {
+                e.preventDefault();
+                alert('Please click the login button 5 times first.');
+                return;
+            }
+
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            const storedUser = JSON.parse(localStorage.getItem('signupUser'));
+
+            if (!storedUser) {
+                alert('No user registered yet. Please sign up first.');
+                window.location.href = 'signup.html';
+                return;
+            }
+
+            if (storedUser.username === username && storedUser.password === password) {
+                alert('Login successful.');
+                window.location.href = 'index.html';
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+    </script>
+    <script src="assets/morse-everywhere.js"></script>
+
+</body>
+</html>
