@@ -1,0 +1,89 @@
+body {
+	margin: 0;
+	min-height: 100vh;
+	font-family: "Courier New", Courier, monospace;
+	background: radial-gradient(circle at top, #f7f7d6 0%, #c7d8b6 48%, #8da78f 100%);
+	color: #1e2d24;
+	display: grid;
+	place-items: center;
+}
+
+.landing {
+	width: min(90vw, 760px);
+	padding: 3rem 1.5rem;
+	text-align: center;
+	background: rgba(250, 251, 241, 0.8);
+	border: 2px solid rgba(30, 45, 36, 0.25);
+	border-radius: 22px;
+	box-shadow: 0 18px 40px rgba(18, 25, 20, 0.2);
+}
+
+.welcome-label {
+	margin: 0 0 1.2rem;
+	font-size: clamp(1.2rem, 2.5vw, 2rem);
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.start-button {
+	padding: 1rem 2.8rem;
+	font-size: clamp(1.2rem, 3.2vw, 2rem);
+	font-weight: 700;
+	color: #f8fbe7;
+	background: linear-gradient(140deg, #1d3b2f, #2a5a45);
+	border: 0;
+	border-radius: 14px;
+	cursor: pointer;
+	transition: transform 160ms ease, box-shadow 160ms ease;
+	box-shadow: 0 10px 24px rgba(20, 44, 34, 0.35);
+}
+
+.start-button:hover {
+	transform: translateY(-2px) scale(1.01);
+	box-shadow: 0 14px 30px rgba(20, 44, 34, 0.4);
+}
+
+.start-button:active {
+	transform: translateY(0);
+}
+
+.start-button:focus-visible {
+	outline: 3px solid #264d3a;
+	outline-offset: 3px;
+}
+
+.morse-render {
+	letter-spacing: 0.08em;
+	word-spacing: 0.35em;
+	line-height: 1.6;
+}
+
+.morse-play-button {
+	margin-left: 0.5rem;
+	min-width: 2.2rem;
+	height: 2.2rem;
+	padding: 0 0.5rem;
+	font-size: 1rem;
+	font-weight: 700;
+	color: #f8fbe7;
+	background: #14281f;
+	border: 1px solid rgba(248, 251, 231, 0.35);
+	border-radius: 999px;
+	cursor: pointer;
+	vertical-align: middle;
+	transition: transform 140ms ease, background-color 140ms ease;
+}
+
+.morse-play-button:hover {
+	background: #1e3a2d;
+	transform: scale(1.05);
+}
+
+.morse-play-button:active {
+	transform: scale(1);
+}
+
+.morse-play-button:focus-visible {
+	outline: 2px solid #1d3b2f;
+	outline-offset: 2px;
+}
