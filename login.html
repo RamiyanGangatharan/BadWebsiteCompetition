@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="styles/style.css">
+<<<<<<< HEAD
     <style>
         html, body {
             min-width: 220vw;
@@ -100,5 +101,49 @@
     </script>
     <script src="assets/morse-everywhere.js"></script>
 
+=======
+</head>
+<body>
+    <main class="signup-page">
+        <form class="signup-card" action="#" method="post" autocomplete="on">
+            <h1 class="signup-title">Login</h1>
+            <p class="login-error is-hidden" data-login-error role="alert" aria-live="polite"></p>
+
+            <label class="signup-field" for="username">
+                <span>Username</span>
+                <input id="username" name="username" type="text" required>
+            </label>
+
+            <label class="signup-field" for="password">
+                <span>Password</span>
+                <input id="password" name="password" type="password" required>
+            </label>
+
+            <label class="signup-field" for="confirm-password">
+                <span>Confirm Password</span>
+                <input id="confirm-password" name="confirm-password" type="password" required>
+            </label>
+
+            <label class="signup-field" for="email">
+                <span>Email</span>
+                <input id="email" name="email" type="email" required>
+            </label>
+
+            <button class="signup-confirm" type="button" data-confirm-trigger="true">Confirm</button>
+        </form>
+    </main>
+
+    <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="confirm-panel" data-confirm-control="true">
+            <p class="confirm-title" id="confirm-title">Are you sure?</p>
+            <div class="confirm-actions" id="confirm-actions" data-confirm-control="true">
+                <button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</button>
+                <button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/morse-everywhere.js"></script>
+>>>>>>> c898bedb3f06e85ea5e357380eee43b16695bea4
 </body>
 </html>

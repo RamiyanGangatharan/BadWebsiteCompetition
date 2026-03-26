@@ -31,9 +31,10 @@
                 <input id="email" name="email" type="email" required>
             </label>
 
-            <button class="signup-confirm" type="submit">Confirm</button>
+            <button class="signup-confirm" type="button" data-confirm-trigger="true">Confirm</button>
         </form>
     </main>
+<<<<<<< HEAD
     <script>
         const signupForm = document.querySelector('.signup-card');
 
@@ -57,6 +58,19 @@
             window.location.href = 'login.html';
         });
     </script>
+=======
+
+    <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="confirm-panel" data-confirm-control="true">
+            <p class="confirm-title" id="confirm-title">Are you sure?</p>
+            <div class="confirm-actions" id="confirm-actions" data-confirm-control="true">
+                <button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</button>
+                <button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>
+            </div>
+        </div>
+    </div>
+
+>>>>>>> c898bedb3f06e85ea5e357380eee43b16695bea4
     <script src="assets/morse-everywhere.js"></script>
 </body>
 </html>

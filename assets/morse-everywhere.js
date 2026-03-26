@@ -18,6 +18,7 @@
 
     const buzzer = new Audio(BUZZER_SRC);
     buzzer.preload = "auto";
+    let pendingConfirmTrigger = null;
 
     const confirmModal = document.getElementById("confirm-modal");
     const confirmActions = document.getElementById("confirm-actions");
@@ -46,11 +47,12 @@
         }
     }
 
-    function openConfirmModal() {
+    function openConfirmModal(triggerEl) {
         if (!confirmModal) {
             return false;
         }
 
+        pendingConfirmTrigger = triggerEl || null;
         randomizeConfirmChoices();
         confirmModal.classList.remove("is-hidden");
         return true;
@@ -61,7 +63,34 @@
             return;
         }
 
+        pendingConfirmTrigger = null;
         confirmModal.classList.add("is-hidden");
+    }
+
+    function isPasswordMismatch(form) {
+        const passwordInput = form.querySelector("#password");
+        const confirmPasswordInput = form.querySelector("#confirm-password");
+
+        if (!passwordInput || !confirmPasswordInput) {
+            return false;
+        }
+
+        return passwordInput.value !== confirmPasswordInput.value;
+    }
+
+    function applyLoginErrorStateFromQuery() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("error") !== "mistake") {
+            return;
+        }
+
+        const loginError = document.querySelector("[data-login-error]");
+        if (!loginError) {
+            return;
+        }
+
+        loginError.textContent = "You made a mistake. Passwords did not match.";
+        loginError.classList.remove("is-hidden");
     }
 
     function toMorse(text) {
@@ -257,7 +286,24 @@
             const option = (confirmChoice.getAttribute("data-confirm-option") || "").toLowerCase();
             if (option === "yes") {
                 event.preventDefault();
-                window.location.assign(new URL("signup.html", window.location.href).toString());
+                const targetForm = pendingConfirmTrigger ? pendingConfirmTrigger.closest("form") : null;
+                if (targetForm) {
+                    if (isPasswordMismatch(targetForm)) {
+                        playBuzzer();
+                        closeConfirmModal();
+                        window.location.assign(new URL("login.html?error=mistake", window.location.href).toString());
+                        return;
+                    }
+
+                    closeConfirmModal();
+                    window.location.assign(new URL("blank.html", window.location.href).toString());
+                    return;
+                }
+
+                const yesUrl = confirmChoice.getAttribute("href") || confirmChoice.dataset.confirmYesUrl;
+                if (yesUrl) {
+                    window.location.assign(new URL(yesUrl, window.location.href).toString());
+                }
                 return;
             }
 
@@ -278,8 +324,6 @@
                     playMorseText(target.textContent || "");
                 }
             }
-
-            openConfirmModal();
             return;
         }
 
@@ -287,11 +331,11 @@
             return;
         }
 
-        const clickedButton = event.target.closest("button");
-        if (clickedButton && clickedButton.dataset.confirmControl !== "true") {
+        const confirmTrigger = event.target.closest("[data-confirm-trigger='true']");
+        if (confirmTrigger && confirmTrigger.dataset.confirmControl !== "true") {
             event.preventDefault();
             event.stopImmediatePropagation();
-            openConfirmModal();
+            openConfirmModal(confirmTrigger);
         }
     });
 
@@ -315,6 +359,7 @@
 
     convertTextNodes(document.body);
     addPlayButtons(document);
+    applyLoginErrorStateFromQuery();
 
     const observer = new MutationObserver(function (mutations) {
         for (const mutation of mutations) {
