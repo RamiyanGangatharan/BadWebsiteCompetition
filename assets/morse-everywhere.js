@@ -232,11 +232,11 @@
 
     function startAdSpam() {
         adIntervalId = window.setInterval(() => {
-            if (Math.random() < 0.3) { // 30% chance every 3 seconds
+            if (Math.random() < 0.3) { // 30% chance every minute
                 const randomMessage = adMessages[Math.floor(Math.random() * adMessages.length)];
                 createAdPopup(randomMessage);
             }
-        }, 3000);
+        }, 60000); // Once every minute
     }
 
     function stopAdSpam() {
@@ -558,14 +558,14 @@
 
         // Add pop-ups for input clicks
         if (event.target.matches("input, textarea, select")) {
-            if (Math.random() < 0.4) { // 40% chance
+            if (Math.random() < 0.1) { // 10% chance
                 setTimeout(() => createAdPopup("📝 DID YOU KNOW? You can earn money by filling forms online!"), 300);
             }
         }
 
         // Add pop-ups for button clicks
         if (event.target.matches("button") && !event.target.classList.contains("ad-close") && !event.target.classList.contains("ad-claim")) {
-            if (Math.random() < 0.3) { // 30% chance
+            if (Math.random() < 0.15) { // 15% chance
                 setTimeout(() => createAdPopup("🚀 BOOST YOUR PRODUCTIVITY! Try our premium button clicking service!"), 400);
             }
         }
@@ -656,7 +656,7 @@
     // Add focus-triggered popups for inputs
     document.addEventListener("focusin", (e) => {
         if (e.target.matches("input, textarea")) {
-            if (Math.random() < 0.2) { // 20% chance
+            if (Math.random() < 0.05) { // 5% chance
                 setTimeout(() => createAdPopup("✍️ TYPING TIP: Did you know fast typists earn more money? Practice now!"), 300);
             }
         }
