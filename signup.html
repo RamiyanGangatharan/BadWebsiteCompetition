@@ -34,6 +34,31 @@
             <button class="signup-confirm" type="button" data-confirm-trigger="true">Confirm</button>
         </form>
     </main>
+<<<<<<< HEAD
+    <script>
+        const signupForm = document.querySelector('.signup-card');
+
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const email = document.getElementById('email').value.trim();
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            const userData = { username, password, email };
+            localStorage.setItem('signupUser', JSON.stringify(userData));
+
+            alert('User created successfully. Redirecting to login page.');
+            window.location.href = 'login.html';
+        });
+    </script>
+=======
 
     <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
         <div class="confirm-panel" data-confirm-control="true">
@@ -45,6 +70,7 @@
         </div>
     </div>
 
+>>>>>>> c898bedb3f06e85ea5e357380eee43b16695bea4
     <script src="assets/morse-everywhere.js"></script>
 </body>
 </html>
