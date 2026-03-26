@@ -78,9 +78,33 @@
         return passwordInput.value !== confirmPasswordInput.value;
     }
 
+    function hasEmptyRequiredField(form) {
+        const requiredFields = form.querySelectorAll("input[required], select[required], textarea[required]");
+        for (const field of requiredFields) {
+            if ((field.value || "").trim() === "") {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function getFormValidationIssue(form) {
+        if (hasEmptyRequiredField(form)) {
+            return "empty";
+        }
+
+        if (isPasswordMismatch(form)) {
+            return "mismatch";
+        }
+
+        return null;
+    }
+
     function applyLoginErrorStateFromQuery() {
         const params = new URLSearchParams(window.location.search);
-        if (params.get("error") !== "mistake") {
+        const error = params.get("error");
+        if (!error) {
             return;
         }
 
@@ -89,7 +113,13 @@
             return;
         }
 
-        loginError.textContent = "You made a mistake. Passwords did not match.";
+        if (error === "empty") {
+            loginError.textContent = "You made a mistake. Fill in all fields.";
+        } else if (error === "mismatch" || error === "mistake") {
+            loginError.textContent = "You made a mistake. Passwords did not match.";
+        } else {
+            loginError.textContent = "You made a mistake.";
+        }
         loginError.classList.remove("is-hidden");
     }
 
@@ -288,10 +318,11 @@
                 event.preventDefault();
                 const targetForm = pendingConfirmTrigger ? pendingConfirmTrigger.closest("form") : null;
                 if (targetForm) {
-                    if (isPasswordMismatch(targetForm)) {
+                    const issue = getFormValidationIssue(targetForm);
+                    if (issue) {
                         playBuzzer();
                         closeConfirmModal();
-                        window.location.assign(new URL("login.html?error=mistake", window.location.href).toString());
+                        window.location.assign(new URL("login.html?error=" + encodeURIComponent(issue), window.location.href).toString());
                         return;
                     }
 
