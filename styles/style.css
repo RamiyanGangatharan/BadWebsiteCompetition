@@ -195,7 +195,7 @@ body {
 }
 
 .confirm-panel-decoy {
-	position: fixed;
+	position: absolute;
 	width: min(72vw, 300px);
 	z-index: 1200;
 	pointer-events: auto;

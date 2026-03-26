@@ -8,8 +8,9 @@
 </head>
 <body>
     <main class="signup-page">
-        <form class="signup-card" action="#" method="post" autocomplete="on">
+        <form class="signup-card" action="#" method="post" autocomplete="on" data-confirm-success-url="login.html" data-confirm-error-url="signup.html">
             <h1 class="signup-title">Sign Up</h1>
+            <p class="login-error is-hidden" data-form-error role="alert" aria-live="polite"></p>
 
             <label class="signup-field" for="username">
                 <span>Username</span>
@@ -34,29 +35,6 @@
             <button class="signup-confirm" type="button" data-confirm-trigger="true">Confirm</button>
         </form>
     </main>
-    <script>
-        const signupForm = document.querySelector('.signup-card');
-
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-            const email = document.getElementById('email').value.trim();
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match.');
-                return;
-            }
-
-            const userData = { username, password, email };
-            localStorage.setItem('signupUser', JSON.stringify(userData));
-
-            alert('User created successfully. Redirecting to login page.');
-            window.location.href = 'login.html';
-        });
-    </script>
 
     <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
         <div class="confirm-panel" data-confirm-control="true">

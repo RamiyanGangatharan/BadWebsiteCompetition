@@ -34,10 +34,20 @@
                 <input id="login-password" name="password" type="password" required>
             </label>
 
-            <button class="login-confirm" type="submit">Login</button>
+            <button class="login-confirm" type="submit" data-confirm-trigger="true">Login</button>
             <p>Don't have an account? <a href="signup.html">Sign up</a></p>
         </form>
     </main>
+
+    <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="confirm-panel" data-confirm-control="true">
+            <p class="confirm-title" id="confirm-title">Are you sure?</p>
+            <div class="confirm-actions" id="confirm-actions" data-confirm-control="true">
+                <button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</button>
+                <button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const loginForm = document.querySelector('.login-card');
@@ -92,7 +102,7 @@
 
             if (storedUser.username === username && storedUser.password === password) {
                 alert('Login successful.');
-                window.location.href = 'index.html';
+                window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
             } else {
                 alert('Invalid username or password.');
             }

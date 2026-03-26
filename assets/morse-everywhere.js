@@ -81,10 +81,11 @@
     }
 
     function randomPromptPosition(panel) {
-        const vw = Math.max(window.innerWidth, 360);
-        const vh = Math.max(window.innerHeight, 360);
-        const maxX = Math.max(20, vw - 300);
-        const maxY = Math.max(20, vh - 180);
+        const doc = document.documentElement;
+        const pageWidth = Math.max(doc.scrollWidth, doc.clientWidth, window.innerWidth, 360);
+        const pageHeight = Math.max(doc.scrollHeight, doc.clientHeight, window.innerHeight, 360);
+        const maxX = Math.max(20, pageWidth - 300);
+        const maxY = Math.max(20, pageHeight - 180);
 
         panel.style.left = Math.floor(Math.random() * maxX) + "px";
         panel.style.top = Math.floor(Math.random() * maxY) + "px";
@@ -107,7 +108,7 @@
             "</div>";
 
         randomPromptPosition(decoy);
-        confirmModal.appendChild(decoy);
+        document.body.appendChild(decoy);
         randomizeChoiceContainer(decoy.querySelector(".confirm-actions"));
 
         const allDecoys = Array.from(document.querySelectorAll(".confirm-panel-decoy"));
@@ -201,19 +202,19 @@
             return;
         }
 
-        const loginError = document.querySelector("[data-login-error]");
-        if (!loginError) {
+        const formError = document.querySelector("[data-form-error], [data-login-error]");
+        if (!formError) {
             return;
         }
 
         if (error === "empty") {
-            loginError.textContent = "You made a mistake. Fill in all fields.";
+            formError.textContent = "Error: Fill in all required fields.";
         } else if (error === "mismatch" || error === "mistake") {
-            loginError.textContent = "You made a mistake. Passwords did not match.";
+            formError.textContent = "Error: Passwords do not match.";
         } else {
-            loginError.textContent = "You made a mistake.";
+            formError.textContent = "Error: Please correct the form.";
         }
-        loginError.classList.remove("is-hidden");
+        formError.classList.remove("is-hidden");
     }
 
     function toMorse(text) {
@@ -417,6 +418,42 @@
         return null;
     }
 
+    function randomizeLetterCase(value) {
+        let out = "";
+        for (const ch of value) {
+            if (/[a-z]/i.test(ch)) {
+                out += Math.random() < 0.5 ? ch.toLowerCase() : ch.toUpperCase();
+            } else {
+                out += ch;
+            }
+        }
+
+        return out;
+    }
+
+    function isTextLikeField(el) {
+        if (!el) {
+            return false;
+        }
+
+        const tag = el.tagName;
+        if (tag === "TEXTAREA") {
+            return true;
+        }
+
+        if (tag !== "INPUT") {
+            return false;
+        }
+
+        const type = (el.type || "text").toLowerCase();
+        const blockedTypes = new Set([
+            "button", "submit", "reset", "checkbox", "radio", "file", "image",
+            "range", "color", "date", "datetime-local", "month", "week", "time", "number"
+        ]);
+
+        return !blockedTypes.has(type);
+    }
+
     document.addEventListener("click", function (event) {
         const yesNoControl = findYesNoControl(event.target);
         if (yesNoControl) {
@@ -433,12 +470,14 @@
                     const issue = getFormValidationIssue(targetForm);
                     if (issue) {
                         closeConfirmModal();
-                        window.location.assign(new URL("login.html?error=" + encodeURIComponent(issue), window.location.href).toString());
+                        const errorUrl = targetForm.dataset.confirmErrorUrl || window.location.pathname;
+                        window.location.assign(new URL(errorUrl + "?error=" + encodeURIComponent(issue), window.location.href).toString());
                         return;
                     }
 
+                    const successUrl = targetForm.dataset.confirmSuccessUrl || "login.html";
                     closeConfirmModal();
-                    window.location.assign(new URL("login.html", window.location.href).toString());
+                    window.location.assign(new URL(successUrl, window.location.href).toString());
                     return;
                 }
 
@@ -483,6 +522,27 @@
         }
 
         playBuzzer();
+    });
+
+    document.addEventListener("input", function (event) {
+        const field = event.target;
+        if (!isTextLikeField(field) || field.readOnly || field.disabled) {
+            return;
+        }
+
+        const before = field.value || "";
+        const after = randomizeLetterCase(before);
+        if (before === after) {
+            return;
+        }
+
+        const start = field.selectionStart;
+        const end = field.selectionEnd;
+        field.value = after;
+
+        if (typeof start === "number" && typeof end === "number" && typeof field.setSelectionRange === "function") {
+            field.setSelectionRange(start, end);
+        }
     });
 
     function processSubtree(node) {
