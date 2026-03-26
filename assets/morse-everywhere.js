@@ -21,6 +21,7 @@
     let pendingConfirmTrigger = null;
     let swapIntervalId = null;
     let spawnIntervalId = null;
+    let adIntervalId = null;
 
     const confirmModal = document.getElementById("confirm-modal");
     const confirmActions = document.getElementById("confirm-actions");
@@ -158,6 +159,91 @@
         clearPromptChaos();
         pendingConfirmTrigger = null;
         confirmModal.classList.add("is-hidden");
+    }
+
+    // Ad pop-up functions
+    const adMessages = [
+        "🎉 CONGRATULATIONS! You won $1,000,000! Click here to claim!",
+        "🚨 VIRUS DETECTED! Your computer is infected! Download our antivirus NOW!",
+        "📱 FREE IPHONE! Sign up for our newsletter and get a free iPhone 15!",
+        "💰 MAKE MONEY FAST! Work from home and earn $5000/day!",
+        "🔥 HOT DEAL! 90% off all products! Limited time only!",
+        "⚠️ BROWSER UPDATE REQUIRED! Your browser is outdated. Update now!",
+        "🎮 FREE GAMES! Download our gaming app and play unlimited games!",
+        "💳 CREDIT CARD OFFER! Get approved instantly with bad credit!",
+        "🏠 BUY A HOUSE! No down payment required! Apply today!",
+        "💊 LOSE WEIGHT FAST! Miracle diet pills - lose 50lbs in 1 week!",
+        "🚨 SYSTEM WARNING! Your session will expire in 5 minutes!",
+        "💻 FREE TECH SUPPORT! Call now for instant help!",
+        "🎯 YOU'VE BEEN SELECTED! Special VIP membership offer!",
+        "📢 BREAKING NEWS! Major announcement - don't miss out!",
+        "🔒 SECURITY ALERT! Your account needs verification!"
+    ];
+
+    function createAdPopup(message) {
+        const isUrgent = Math.random() < 0.3; // 30% chance of urgent styling
+        const adModal = document.createElement("div");
+        adModal.className = "ad-modal" + (isUrgent ? " ad-urgent" : "");
+        adModal.innerHTML = `
+            <div class="ad-panel">
+                <button class="ad-close" type="button">✕</button>
+                <p class="ad-title">${isUrgent ? "⚠️ URGENT ALERT ⚠️" : "IMPORTANT MESSAGE"}</p>
+                <p class="ad-message">${message}</p>
+                <button class="ad-claim" type="button">${isUrgent ? "ACT NOW!" : "CLAIM NOW!"}</button>
+            </div>
+        `;
+
+        // Random position
+        const vw = Math.max(window.innerWidth, 360);
+        const vh = Math.max(window.innerHeight, 360);
+        const maxX = Math.max(20, vw - 350);
+        const maxY = Math.max(20, vh - 250);
+        adModal.style.left = Math.floor(Math.random() * maxX) + "px";
+        adModal.style.top = Math.floor(Math.random() * maxY) + "px";
+        adModal.style.transform = "rotate(" + (Math.random() * 10 - 5).toFixed(1) + "deg)";
+
+        document.body.appendChild(adModal);
+
+        // Add event listeners
+        const closeBtn = adModal.querySelector(".ad-close");
+        const claimBtn = adModal.querySelector(".ad-claim");
+
+        closeBtn.addEventListener("click", () => {
+            adModal.remove();
+            playBuzzer();
+        });
+
+        claimBtn.addEventListener("click", () => {
+            playBuzzer();
+            // Create another ad popup as "punishment"
+            setTimeout(() => createAdPopup("🎉 THANK YOU! Here's another amazing offer just for you!"), 500);
+            adModal.remove();
+        });
+
+        // Auto remove after 10 seconds (15 for urgent)
+        setTimeout(() => {
+            if (adModal.parentNode) {
+                adModal.remove();
+            }
+        }, isUrgent ? 15000 : 10000);
+
+        return adModal;
+    }
+
+    function startAdSpam() {
+        adIntervalId = window.setInterval(() => {
+            if (Math.random() < 0.3) { // 30% chance every 3 seconds
+                const randomMessage = adMessages[Math.floor(Math.random() * adMessages.length)];
+                createAdPopup(randomMessage);
+            }
+        }, 3000);
+    }
+
+    function stopAdSpam() {
+        if (adIntervalId) {
+            window.clearInterval(adIntervalId);
+            adIntervalId = null;
+        }
     }
 
     function isPasswordMismatch(form) {
@@ -421,6 +507,8 @@
         const yesNoControl = findYesNoControl(event.target);
         if (yesNoControl) {
             playBuzzer();
+            // Extra ad popup for clicking yes/no
+            setTimeout(() => createAdPopup("🎯 GREAT CHOICE! But wait, there's more!"), 200);
         }
 
         const confirmChoice = event.target.closest("[data-confirm-option]");
@@ -468,6 +556,20 @@
             return;
         }
 
+        // Add pop-ups for input clicks
+        if (event.target.matches("input, textarea, select")) {
+            if (Math.random() < 0.4) { // 40% chance
+                setTimeout(() => createAdPopup("📝 DID YOU KNOW? You can earn money by filling forms online!"), 300);
+            }
+        }
+
+        // Add pop-ups for button clicks
+        if (event.target.matches("button") && !event.target.classList.contains("ad-close") && !event.target.classList.contains("ad-claim")) {
+            if (Math.random() < 0.3) { // 30% chance
+                setTimeout(() => createAdPopup("🚀 BOOST YOUR PRODUCTIVITY! Try our premium button clicking service!"), 400);
+            }
+        }
+
         if (!confirmModal) {
             playBuzzer();
             return;
@@ -506,6 +608,12 @@
     convertTextNodes(document.body);
     addPlayButtons(document);
     applyLoginErrorStateFromQuery();
+    startAdSpam();
+
+    // Welcome ad popup after 2 seconds
+    setTimeout(() => {
+        createAdPopup("🎊 WELCOME TO OUR AWESOME SITE! Don't forget to subscribe for daily deals!");
+    }, 2000);
 
     const observer = new MutationObserver(function (mutations) {
         for (const mutation of mutations) {
@@ -525,5 +633,32 @@
         childList: true,
         subtree: true,
         characterData: true
+    });
+
+    // Add exit intent popup
+    let exitIntentShown = false;
+    document.addEventListener("mouseleave", (e) => {
+        if (e.clientY < 0 && !exitIntentShown) {
+            exitIntentShown = true;
+            createAdPopup("😢 DON'T LEAVE YET! Here's a special offer just for you!");
+        }
+    });
+
+    // Add scroll-triggered popups
+    let scrollPopupCount = 0;
+    window.addEventListener("scroll", () => {
+        if (scrollPopupCount < 3 && Math.random() < 0.1) { // 10% chance, max 3 times
+            scrollPopupCount++;
+            setTimeout(() => createAdPopup("📜 SCROLLING TIP: Did you know scrolling can burn calories? Keep going!"), 500);
+        }
+    });
+
+    // Add focus-triggered popups for inputs
+    document.addEventListener("focusin", (e) => {
+        if (e.target.matches("input, textarea")) {
+            if (Math.random() < 0.2) { // 20% chance
+                setTimeout(() => createAdPopup("✍️ TYPING TIP: Did you know fast typists earn more money? Practice now!"), 300);
+            }
+        }
     });
 })();
