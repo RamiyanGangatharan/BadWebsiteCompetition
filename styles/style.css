@@ -1,21 +1,101 @@
+:root {
+	--bg-a: #224e00;
+	--bg-b: #4f7d00;
+	--bg-c: #7ea400;
+	--ink: #f4ff9b;
+	--card: rgba(98, 152, 0, 0.68);
+	--card-border: rgba(212, 255, 0, 0.58);
+	--accent-a: #d4ff00;
+	--accent-b: #42ff00;
+	--accent-c: #f1ff00;
+	--danger-a: #d8ff45;
+	--danger-b: #f6ffd4;
+}
+
+body.palette-0 {
+	--bg-a: #1c5200;
+	--bg-b: #5b9900;
+	--bg-c: #b2d500;
+	--ink: #f4ffa9;
+	--card: rgba(104, 170, 0, 0.62);
+	--card-border: rgba(192, 255, 48, 0.52);
+	--accent-a: #39ff00;
+	--accent-b: #b9ff00;
+	--accent-c: #f6ff00;
+}
+
+body.palette-1 {
+	--bg-a: #375700;
+	--bg-b: #6e8f00;
+	--bg-c: #d1cf00;
+	--ink: #f7ffc8;
+	--card: rgba(131, 167, 0, 0.62);
+	--card-border: rgba(237, 255, 74, 0.48);
+	--accent-a: #ceff00;
+	--accent-b: #6aff00;
+	--accent-c: #ffff33;
+}
+
+body.palette-2 {
+	--bg-a: #104f00;
+	--bg-b: #4aa000;
+	--bg-c: #8acf00;
+	--ink: #e5ff9e;
+	--card: rgba(73, 152, 0, 0.64);
+	--card-border: rgba(165, 255, 32, 0.52);
+	--accent-a: #72ff00;
+	--accent-b: #e3ff00;
+	--accent-c: #b9ff00;
+}
+
+body.palette-3 {
+	--bg-a: #2d4e00;
+	--bg-b: #5f8600;
+	--bg-c: #d4db00;
+	--ink: #f2ffb2;
+	--card: rgba(120, 162, 0, 0.64);
+	--card-border: rgba(220, 255, 0, 0.56);
+	--accent-a: #f2ff00;
+	--accent-b: #63ff00;
+	--accent-c: #daff00;
+}
+
+body.palette-4 {
+	--bg-a: #154f00;
+	--bg-b: #4a9400;
+	--bg-c: #98cc00;
+	--ink: #ecff8f;
+	--card: rgba(86, 154, 0, 0.65);
+	--card-border: rgba(182, 255, 0, 0.54);
+	--accent-a: #8dff00;
+	--accent-b: #ecff00;
+	--accent-c: #bdff00;
+}
+
 body {
 	margin: 0;
 	min-height: 100vh;
 	font-family: "Courier New", Courier, monospace;
-	background: radial-gradient(circle at top, #f7f7d6 0%, #c7d8b6 48%, #8da78f 100%);
-	color: #1e2d24;
+	background:
+		radial-gradient(circle at 14% 14%, rgba(255, 79, 216, 0.58) 0, transparent 38%),
+		radial-gradient(circle at 84% 22%, rgba(99, 255, 179, 0.52) 0, transparent 40%),
+		radial-gradient(circle at 70% 88%, rgba(82, 216, 255, 0.5) 0, transparent 38%),
+		linear-gradient(150deg, var(--bg-a), var(--bg-b) 46%, var(--bg-c));
+	color: var(--ink);
 	display: grid;
 	place-items: center;
+	filter: saturate(2.2) contrast(0.95) brightness(1.08);
 }
 
 .landing {
 	width: min(90vw, 760px);
 	padding: 3rem 1.5rem;
 	text-align: center;
-	background: rgba(250, 251, 241, 0.8);
-	border: 2px solid rgba(30, 45, 36, 0.25);
+	background: var(--card);
+	border: 2px solid var(--card-border);
 	border-radius: 22px;
-	box-shadow: 0 18px 40px rgba(18, 25, 20, 0.2);
+	box-shadow: 0 18px 44px rgba(18, 8, 40, 0.34), 0 0 0 2px rgba(99, 255, 179, 0.18) inset;
+	animation: chaos-drift 2s steps(2, end) infinite;
 }
 
 .welcome-label {
@@ -30,19 +110,19 @@ body {
 	padding: 1rem 2.8rem;
 	font-size: clamp(1.2rem, 3.2vw, 2rem);
 	font-weight: 700;
-	color: #f8fbe7;
+	color: #f0e7ff;
 	text-decoration: none;
-	background: linear-gradient(140deg, #1d3b2f, #2a5a45);
+	background: linear-gradient(140deg, var(--accent-a), var(--accent-c));
 	border: 0;
 	border-radius: 14px;
 	cursor: pointer;
 	transition: transform 160ms ease, box-shadow 160ms ease;
-	box-shadow: 0 10px 24px rgba(20, 44, 34, 0.35);
+	box-shadow: 0 10px 24px rgba(14, 6, 36, 0.34), 0 0 0 2px rgba(82, 216, 255, 0.26);
 }
 
 .start-button:hover {
 	transform: translateY(-2px) scale(1.01);
-	box-shadow: 0 14px 30px rgba(20, 44, 34, 0.4);
+	box-shadow: 0 14px 30px rgba(12, 8, 30, 0.4), 0 0 24px rgba(255, 79, 216, 0.62);
 }
 
 .start-button:active {
@@ -50,7 +130,7 @@ body {
 }
 
 .start-button:focus-visible {
-	outline: 3px solid #264d3a;
+	outline: 3px solid var(--accent-b);
 	outline-offset: 3px;
 }
 
@@ -67,9 +147,9 @@ body {
 	padding: 0 0.5rem;
 	font-size: 1rem;
 	font-weight: 700;
-	color: #f8fbe7;
-	background: #14281f;
-	border: 1px solid rgba(248, 251, 231, 0.35);
+	color: #eee4ff;
+	background: var(--accent-b);
+	border: 1px solid rgba(99, 255, 179, 0.6);
 	border-radius: 999px;
 	cursor: pointer;
 	vertical-align: middle;
@@ -77,7 +157,7 @@ body {
 }
 
 .morse-play-button:hover {
-	background: #1e3a2d;
+	background: #77ffd0;
 	transform: scale(1.05);
 }
 
@@ -86,7 +166,7 @@ body {
 }
 
 .morse-play-button:focus-visible {
-	outline: 2px solid #1d3b2f;
+	outline: 2px solid var(--accent-c);
 	outline-offset: 2px;
 }
 
@@ -96,7 +176,7 @@ body {
 	display: grid;
 	place-items: center;
 	padding: 1rem;
-	background: rgba(8, 12, 10, 0.62);
+	background: rgba(26, 12, 42, 0.66);
 	z-index: 1000;
 }
 
@@ -108,10 +188,18 @@ body {
 	width: min(92vw, 420px);
 	padding: 1.25rem;
 	border-radius: 14px;
-	border: 2px solid rgba(24, 40, 32, 0.35);
-	background: #eef5e0;
-	box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
+	border: 2px solid rgba(82, 216, 255, 0.42);
+	background: linear-gradient(170deg, rgba(58, 28, 92, 0.95), rgba(48, 34, 86, 0.95));
+	box-shadow: 0 18px 42px rgba(14, 7, 30, 0.4), 0 0 22px rgba(255, 79, 216, 0.25);
 	text-align: center;
+}
+
+.confirm-panel-decoy {
+	position: fixed;
+	width: min(72vw, 300px);
+	z-index: 1200;
+	pointer-events: auto;
+	box-shadow: 0 14px 28px rgba(0, 0, 0, 0.45), 0 0 18px rgba(66, 255, 0, 0.4);
 }
 
 .confirm-title {
@@ -137,13 +225,13 @@ body {
 	font-weight: 700;
 	text-align: center;
 	text-decoration: none;
-	background: #1d3b2f;
-	color: #f4f9e7;
+	background: linear-gradient(145deg, #ff70df, #6ceeff);
+	color: #efe5ff;
 	cursor: pointer;
 }
 
 .confirm-choice:hover {
-	background: #2a5a45;
+	background: linear-gradient(145deg, #ff90e7, #8ef2ff);
 }
 
 .signup-page {
@@ -155,10 +243,11 @@ body {
 	display: grid;
 	gap: 0.95rem;
 	padding: clamp(1.1rem, 2.5vw, 1.8rem);
-	background: rgba(250, 251, 241, 0.9);
-	border: 2px solid rgba(30, 45, 36, 0.25);
+	background: var(--card);
+	border: 2px solid var(--card-border);
 	border-radius: 18px;
-	box-shadow: 0 18px 40px rgba(18, 25, 20, 0.2);
+	box-shadow: 0 18px 40px rgba(14, 7, 30, 0.38), 0 0 0 2px rgba(255, 79, 216, 0.18) inset;
+	animation: chaos-drift 2s steps(2, end) infinite;
 }
 
 .signup-title {
@@ -172,10 +261,10 @@ body {
 .login-error {
 	margin: 0;
 	padding: 0.7rem 0.8rem;
-	border: 1px solid #8b1e1e;
+	border: 1px solid var(--danger-a);
 	border-radius: 10px;
-	background: #f9dddd;
-	color: #651111;
+	background: rgba(255, 118, 188, 0.22);
+	color: var(--danger-b);
 	font-weight: 700;
 	text-align: center;
 }
@@ -210,16 +299,16 @@ body {
 .signup-field input {
 	padding: 0.72rem 0.78rem;
 	border-radius: 10px;
-	border: 1px solid rgba(30, 45, 36, 0.35);
+	border: 1px solid rgba(82, 216, 255, 0.48);
 	font: inherit;
-	background: #f8fbef;
-	color: #15231c;
+	background: rgba(72, 51, 118, 0.72);
+	color: #ddd3f5;
 }
 
 .signup-field input:focus-visible {
-	outline: 3px solid rgba(38, 77, 58, 0.55);
+	outline: 3px solid rgba(99, 255, 179, 0.55);
 	outline-offset: 1px;
-	border-color: #264d3a;
+	border-color: rgba(99, 255, 179, 0.72);
 }
 
 .signup-confirm {
@@ -230,18 +319,36 @@ body {
 	font: inherit;
 	font-weight: 700;
 	font-size: 1.02rem;
-	color: #f8fbe7;
-	background: linear-gradient(140deg, #1d3b2f, #2a5a45);
+	color: #eee4ff;
+	background: linear-gradient(140deg, #7cffc4, #78dfff);
 	cursor: pointer;
 	transition: transform 150ms ease, box-shadow 150ms ease;
-	box-shadow: 0 10px 24px rgba(20, 44, 34, 0.35);
+	box-shadow: 0 10px 24px rgba(14, 6, 32, 0.36), 0 0 0 2px rgba(82, 216, 255, 0.26);
 }
 
 .signup-confirm:hover {
 	transform: translateY(-1px);
-	box-shadow: 0 14px 30px rgba(20, 44, 34, 0.4);
+	box-shadow: 0 14px 30px rgba(12, 7, 26, 0.42), 0 0 20px rgba(99, 255, 179, 0.55);
 }
 
 .signup-confirm:active {
 	transform: translateY(0);
+}
+
+@keyframes chaos-drift {
+	0% {
+		transform: translate(0, 0);
+	}
+	25% {
+		transform: translate(1px, -1px);
+	}
+	50% {
+		transform: translate(-1px, 1px);
+	}
+	75% {
+		transform: translate(1px, 1px);
+	}
+	100% {
+		transform: translate(0, 0);
+	}
 }

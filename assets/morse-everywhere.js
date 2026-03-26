@@ -19,6 +19,8 @@
     const buzzer = new Audio(BUZZER_SRC);
     buzzer.preload = "auto";
     let pendingConfirmTrigger = null;
+    let swapIntervalId = null;
+    let spawnIntervalId = null;
 
     const confirmModal = document.getElementById("confirm-modal");
     const confirmActions = document.getElementById("confirm-actions");
@@ -47,6 +49,95 @@
         }
     }
 
+    function randomizeChoiceContainer(container) {
+        const choices = Array.from(container.querySelectorAll("[data-confirm-option]"));
+        if (choices.length !== 2) {
+            return;
+        }
+
+        if (Math.random() < 0.5) {
+            container.appendChild(choices[0]);
+            container.appendChild(choices[1]);
+        } else {
+            container.appendChild(choices[1]);
+            container.appendChild(choices[0]);
+        }
+    }
+
+    function clearPromptChaos() {
+        if (swapIntervalId) {
+            window.clearInterval(swapIntervalId);
+            swapIntervalId = null;
+        }
+
+        if (spawnIntervalId) {
+            window.clearInterval(spawnIntervalId);
+            spawnIntervalId = null;
+        }
+
+        for (const decoy of document.querySelectorAll(".confirm-panel-decoy")) {
+            decoy.remove();
+        }
+    }
+
+    function randomPromptPosition(panel) {
+        const vw = Math.max(window.innerWidth, 360);
+        const vh = Math.max(window.innerHeight, 360);
+        const maxX = Math.max(20, vw - 300);
+        const maxY = Math.max(20, vh - 180);
+
+        panel.style.left = Math.floor(Math.random() * maxX) + "px";
+        panel.style.top = Math.floor(Math.random() * maxY) + "px";
+        panel.style.transform = "rotate(" + (Math.random() * 18 - 9).toFixed(1) + "deg)";
+    }
+
+    function spawnDecoyPrompt() {
+        if (!confirmModal) {
+            return;
+        }
+
+        const decoy = document.createElement("div");
+        decoy.className = "confirm-panel confirm-panel-decoy";
+        decoy.dataset.confirmControl = "true";
+        decoy.innerHTML =
+            '<p class="confirm-title" data-confirm-control="true">Are you sure?</p>' +
+            '<div class="confirm-actions" data-confirm-control="true">' +
+            '<button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</button>' +
+            '<button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>' +
+            "</div>";
+
+        randomPromptPosition(decoy);
+        confirmModal.appendChild(decoy);
+        randomizeChoiceContainer(decoy.querySelector(".confirm-actions"));
+
+        const allDecoys = Array.from(document.querySelectorAll(".confirm-panel-decoy"));
+        if (allDecoys.length > 14) {
+            allDecoys[0].remove();
+        }
+    }
+
+    function startPromptChaos() {
+        clearPromptChaos();
+
+        swapIntervalId = window.setInterval(function () {
+            randomizeConfirmChoices();
+
+            for (const actionRow of document.querySelectorAll(".confirm-panel-decoy .confirm-actions")) {
+                randomizeChoiceContainer(actionRow);
+            }
+        }, 320);
+
+        spawnIntervalId = window.setInterval(function () {
+            spawnDecoyPrompt();
+
+            for (const decoy of document.querySelectorAll(".confirm-panel-decoy")) {
+                if (Math.random() < 0.35) {
+                    randomPromptPosition(decoy);
+                }
+            }
+        }, 520);
+    }
+
     function openConfirmModal(triggerEl) {
         if (!confirmModal) {
             return false;
@@ -55,6 +146,7 @@
         pendingConfirmTrigger = triggerEl || null;
         randomizeConfirmChoices();
         confirmModal.classList.remove("is-hidden");
+        startPromptChaos();
         return true;
     }
 
@@ -63,6 +155,7 @@
             return;
         }
 
+        clearPromptChaos();
         pendingConfirmTrigger = null;
         confirmModal.classList.add("is-hidden");
     }
@@ -310,7 +403,26 @@
         };
     }
 
+    function findYesNoControl(target) {
+        const control = target.closest("button, a, input[type='button'], input[type='submit']");
+        if (!control) {
+            return null;
+        }
+
+        const label = (control.textContent || control.value || "").trim().toLowerCase();
+        if (label === "yes" || label === "no") {
+            return control;
+        }
+
+        return null;
+    }
+
     document.addEventListener("click", function (event) {
+        const yesNoControl = findYesNoControl(event.target);
+        if (yesNoControl) {
+            playBuzzer();
+        }
+
         const confirmChoice = event.target.closest("[data-confirm-option]");
         if (confirmChoice) {
             const option = (confirmChoice.getAttribute("data-confirm-option") || "").toLowerCase();
@@ -320,7 +432,6 @@
                 if (targetForm) {
                     const issue = getFormValidationIssue(targetForm);
                     if (issue) {
-                        playBuzzer();
                         closeConfirmModal();
                         window.location.assign(new URL("login.html?error=" + encodeURIComponent(issue), window.location.href).toString());
                         return;
@@ -339,7 +450,6 @@
             }
 
             event.preventDefault();
-            playBuzzer();
             closeConfirmModal();
             return;
         }
@@ -359,15 +469,20 @@
         }
 
         if (!confirmModal) {
+            playBuzzer();
             return;
         }
 
         const confirmTrigger = event.target.closest("[data-confirm-trigger='true']");
         if (confirmTrigger && confirmTrigger.dataset.confirmControl !== "true") {
+            playBuzzer();
             event.preventDefault();
             event.stopImmediatePropagation();
             openConfirmModal(confirmTrigger);
+            return;
         }
+
+        playBuzzer();
     });
 
     function processSubtree(node) {
