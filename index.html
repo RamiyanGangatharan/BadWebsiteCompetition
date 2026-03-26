@@ -12,6 +12,16 @@
         <button class="start-button" type="button">Get Started</button>
     </main>
 
+    <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+        <div class="confirm-panel" data-confirm-control="true">
+            <p class="confirm-title" id="confirm-title">Are you sure?</p>
+            <div class="confirm-actions" id="confirm-actions" data-confirm-control="true">
+                <button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</button>
+                <button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         (function () {
             const MORSE = {
@@ -26,8 +36,43 @@
 
             const SKIP_TAGS = new Set(["SCRIPT", "STYLE", "NOSCRIPT", "TEXTAREA"]);
             const PLAY_BUTTON_CLASS = "morse-play-button";
+            const BUZZER_SRC = "assets/extremely-loud-incorrect-buzzer_0cDaG20.mp3";
             let currentPlayback = null;
             let audioContext = null;
+            const buzzer = new Audio(BUZZER_SRC);
+            buzzer.preload = "auto";
+
+            const confirmModal = document.getElementById("confirm-modal");
+            const confirmActions = document.getElementById("confirm-actions");
+
+            function playBuzzer() {
+                buzzer.currentTime = 0;
+                buzzer.play();
+            }
+
+            function randomizeConfirmChoices() {
+                const choices = Array.from(confirmActions.querySelectorAll("[data-confirm-option]"));
+                if (choices.length !== 2) {
+                    return;
+                }
+
+                if (Math.random() < 0.5) {
+                    confirmActions.appendChild(choices[0]);
+                    confirmActions.appendChild(choices[1]);
+                } else {
+                    confirmActions.appendChild(choices[1]);
+                    confirmActions.appendChild(choices[0]);
+                }
+            }
+
+            function openConfirmModal() {
+                randomizeConfirmChoices();
+                confirmModal.classList.remove("is-hidden");
+            }
+
+            function closeConfirmModal() {
+                confirmModal.classList.add("is-hidden");
+            }
 
             function toMorse(text) {
                 const out = [];
@@ -215,22 +260,37 @@
             }
 
             document.addEventListener("click", function (event) {
-                const button = event.target.closest("." + PLAY_BUTTON_CLASS);
-                if (!button) {
+                const confirmChoice = event.target.closest("[data-confirm-option]");
+                if (confirmChoice) {
+                    event.preventDefault();
+                    playBuzzer();
+                    closeConfirmModal();
                     return;
                 }
 
-                const targetId = button.dataset.targetId;
-                if (!targetId) {
+                const morsePlayButton = event.target.closest("." + PLAY_BUTTON_CLASS);
+                if (morsePlayButton) {
+                    event.preventDefault();
+
+                    const targetId = morsePlayButton.dataset.targetId;
+                    if (targetId) {
+                        const target = document.getElementById(targetId);
+                        if (target) {
+                            playMorseText(target.textContent || "");
+                        }
+                    }
+
+                    openConfirmModal();
                     return;
                 }
 
-                const target = document.getElementById(targetId);
-                if (!target) {
+                const clickedButton = event.target.closest("button");
+                if (clickedButton && clickedButton.dataset.confirmControl !== "true") {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    openConfirmModal();
                     return;
                 }
-
-                playMorseText(target.textContent || "");
             });
 
             function processSubtree(node) {
