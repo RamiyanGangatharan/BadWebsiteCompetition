@@ -9,14 +9,14 @@
 <body>
     <main class="landing">
         <p class="welcome-label">Welcome</p>
-        <button class="start-button" type="button">Get Started</button>
+        <button class="start-button" type="button" data-confirm-trigger="true">Get Started</button>
     </main>
 
     <div class="confirm-modal is-hidden" id="confirm-modal" data-confirm-control="true" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
         <div class="confirm-panel" data-confirm-control="true">
             <p class="confirm-title" id="confirm-title">Are you sure?</p>
             <div class="confirm-actions" id="confirm-actions" data-confirm-control="true">
-                <a href="signup.html" class="confirm-choice" data-confirm-option="yes" data-confirm-control="true">Yes</a>
+                <button type="button" class="confirm-choice" data-confirm-option="yes" data-confirm-yes-url="login.html" data-confirm-control="true">Yes</button>
                 <button type="button" class="confirm-choice" data-confirm-option="no" data-confirm-control="true">No</button>
             </div>
         </div>
