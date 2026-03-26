@@ -327,7 +327,7 @@
                     }
 
                     closeConfirmModal();
-                    window.location.assign(new URL("blank.html", window.location.href).toString());
+                    window.location.assign(new URL("login.html", window.location.href).toString());
                     return;
                 }
 
